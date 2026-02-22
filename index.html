@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Red Bull Livery Edition</title>
+
+<style>
+body{
+margin:0;
+background:#05070d;
+color:white;
+font-family:Arial, sans-serif;
+text-align:center;
+overflow:hidden;
+}
+
+/* HEADER */
+.header{
+background:linear-gradient(90deg,#001c58,#c8102e);
+padding:20px;
+font-size:26px;
+font-weight:bold;
+letter-spacing:2px;
+}
+
+/* DRIVER INTRO */
+#intro{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+z-index:10;
+animation:fadeOut 6s forwards;
+animation-delay:6s;
+}
+
+#driverName{
+font-size:40px;
+font-weight:bold;
+color:#1e5eff;
+letter-spacing:3px;
+animation:slideIn 2s ease-out;
+}
+
+@keyframes slideIn{
+from{opacity:0; transform:translateY(50px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+@keyframes fadeOut{
+to{opacity:0; visibility:hidden;}
+}
+
+/* MAIN */
+.section{padding:20px;}
+
+img{
+width:220px;
+border-radius:15px;
+margin-top:15px;
+box-shadow:0 0 20px #1e5eff;
+}
+
+/* START LIGHTS */
+.lights{
+display:flex;
+justify-content:center;
+gap:10px;
+margin:20px;
+}
+
+.light{
+width:25px;
+height:25px;
+background:#330000;
+border-radius:50%;
+}
+
+.light.on{
+background:red;
+box-shadow:0 0 15px red;
+}
+
+/* COUNTDOWN */
+#countdown{
+font-size:22px;
+margin-top:15px;
+color:#1e5eff;
+}
+
+/* TRACK */
+.track{
+position:relative;
+width:100%;
+height:120px;
+background:#111;
+overflow:hidden;
+margin-top:30px;
+}
+
+.car{
+position:absolute;
+width:140px;
+bottom:10px;
+left:-200px;
+transition:transform 0.3s ease;
+}
+
+/* BUTTON */
+button{
+background:#c8102e;
+color:white;
+padding:15px 30px;
+border:none;
+font-size:18px;
+border-radius:6px;
+cursor:pointer;
+margin-top:20px;
+box-shadow:0 0 15px #c8102e;
+}
+
+button:hover{background:#a00;}
+
+button:active{
+transform:scale(0.95);
+}
+</style>
+</head>
+
+<body onclick="enableAudio()">
+
+<div id="intro">
+<div style="font-size:18px;color:#888;">2026 Birthday Grand Prix</div>
+<div id="driverName"></div>
+<div style="margin-top:10px;color:#c8102e;">Red Bull Livery Edition</div>
+</div>
+
+<div class="header">
+🏁 2026 GRAND PRIX PROJECT 🏁
+</div>
+
+<div class="section">
+<h2>Boyfie Turning 26 Today!</h2>
+
+<img src="foto-mas.jpg">
+
+<div id="countdown"></div>
+
+<div class="lights">
+<div class="light"></div>
+<div class="light"></div>
+<div class="light"></div>
+<div class="light"></div>
+<div class="light"></div>
+</div>
+
+<button onclick="startRace()">START RACE</button>
+
+<div id="message" style="margin-top:25px;"></div>
+</div>
+
+<div class="track">
+<img src="https://i.imgur.com/7QZ7Z7E.png" class="car" id="car">
+</div>
+
+<audio id="bgm" loop>
+<source src="lagu.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="engine">
+<source src="engine.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+/* ===== GANTI NAMA DI SINI ===== */
+const namaMas = "NAMA DIA";
+document.getElementById("driverName").innerText = namaMas.toUpperCase();
+
+/* ENABLE AUDIO ON FIRST CLICK */
+function enableAudio(){
+document.getElementById("bgm").play().catch(()=>{});
+document.body.onclick=null;
+}
+
+/* COUNTDOWN WIB */
+var countDate = new Date("Feb 23, 2026 00:00:00 GMT+0700").getTime();
+
+var x = setInterval(function(){
+var now = new Date().getTime();
+var distance = countDate - now;
+
+var hours = Math.floor((distance % (1000*60*60*24))/(1000*60*60));
+var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
+var seconds = Math.floor((distance % (1000*60))/1000);
+
+document.getElementById("countdown").innerHTML =
+"Lights out in: " + hours+"h "+minutes+"m "+seconds+"s";
+
+if(distance<0){
+clearInterval(x);
+document.getElementById("countdown").innerHTML="🏆 IT'S RACE DAY 🏆";
+}
+},1000);
+
+
+/* START LIGHT SEQUENCE */
+function startRace(){
+
+let lights=document.querySelectorAll(".light");
+let i=0;
+
+let engine=document.getElementById("engine");
+let bgm=document.getElementById("bgm");
+let car=document.getElementById("car");
+
+engine.play();
+
+let interval=setInterval(()=>{
+if(i<lights.length){
+lights[i].classList.add("on");
+i++;
+}else{
+clearInterval(interval);
+
+setTimeout(()=>{
+lights.forEach(l=>l.classList.remove("on"));
+
+car.style.animation="drive 4s linear forwards";
+car.style.transform="translateY(-3px)";
+bgm.play();
+
+document.getElementById("message").innerHTML=`
+<h2>🏆 HAPPY BIRTHDAY MY WORLD CHAMPION 🏆</h2>
+<p>No pit stop can slow my love for you.</p>
+<p>No DRS needed, you’re already ahead in my heart.</p>
+<p>You are my forever P1 💙</p>
+`;
+
+},1000);
+
+}
+},700);
+}
+
+/* CAR ANIMATION */
+let style=document.createElement('style');
+style.innerHTML=`
+@keyframes drive{
+from{left:-200px;}
+to{left:110%;}
+}
+`;
+document.head.appendChild(style);
+
+</script>
+
+</body>
+</html>
